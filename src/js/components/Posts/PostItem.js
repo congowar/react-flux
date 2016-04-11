@@ -1,10 +1,39 @@
 import React from "react";
 
 import * as actions from "../../actions/actions";
+import AppStore from "../../stores/store";
+import Comments from "./Comments";
 
 export default class PostItem extends React.Component {
-	showPostInfo(postId) {
-		actions.showPostInfo(postId);
+	constructor() {
+		super();
+		this.getPostData = this.getPostData.bind(this);
+		this.state = {
+			postData: AppStore.getPostData(),
+		};
+	}
+
+	componentWillMount() {
+		AppStore.on("change", this.getPostData);
+	}
+
+	componentWillUnmount() {
+		AppStore.removeListener("change", this.getPostData);
+	}
+
+	getPostData() {
+		this.setState({
+			postData: AppStore.getPostData(),
+		});
+	}
+
+	showPostInfo(postId, postNum) {
+		const fields = "comments.summary(true).limit(5)";
+		actions.showPostInfo(postId, fields);
+
+		const commentsContainer = $("[data-postid=" + postNum + "]").find(".comments");
+		$('.comments').hide();
+		commentsContainer.show();
 	}
 
 	render() {
@@ -23,14 +52,23 @@ export default class PostItem extends React.Component {
 		};
 
 		return (
-			<div class="post list-group-item">
+			<div class="post list-group-item" data-postid={this.props.postNum}>
 				<h3>{this.props.name}</h3>
-				<p><strong>Created Time: </strong>{date.toLocaleString("ru", dateOptions)}</p>
+				<p>
+					<strong>Created Time: </strong>
+					{date.toLocaleString("ru", dateOptions)}
+				</p>
 				<div class="post-img" style={styles}></div>
 				<p class="description">{this.props.text}</p>
 				<p class="text-right">
-					<button onClick={this.showPostInfo.bind(null, this.props.id)} class="btn btn-succes">Open</button>
+					<button 
+						onClick={this.showPostInfo.bind(null, this.props.postId, this.props.postNum)} 
+						class="btn btn-succes open-post"
+						>Open
+					</button>
 				</p>
+
+				<Comments />
 			</div>
 		)
 	}

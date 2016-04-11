@@ -12,6 +12,8 @@ export default {
 	ADD_NEW_POST: "ADD_NEW_POST",
 	DELETE_POST: "DELETE_POST",
 
-	// FACEBOOK APP DATA
+	// facebook app data
 	APP_ID: "552216338261451",
+
+	OPEN_POST: "OPEN_POST",
 };

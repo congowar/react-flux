@@ -1,6 +1,7 @@
 import axios from "axios";
 import ReactDOM from "react-dom";
 import Promise from "bluebird";
+import * as API from "../api/userApi";
 
 import dispatcher from "../dispatchers/dispatcher";
 import Constants from "../constants/constants";
@@ -30,7 +31,7 @@ export function login() {
 
 						FB.api(`/${userID}`, 'GET', 
 							{ "fields": "name, email, id, picture," +
-													"posts.limit(10){description, id, picture, link, name, created_time, full_picture}",
+													"posts.limit(10){description, id, parent_id, picture, link, name, created_time, full_picture}",
 							}, 
 							(response) => {
 								if (response) {
@@ -45,7 +46,6 @@ export function login() {
 						});		
 
 						resolve(userData);
-
 					} else { 
 						throw new Error('Error');
 					}
@@ -63,7 +63,7 @@ export function login() {
 		const getPosts = setInterval(() => {
 			if (data.posts.data.length > 0) {
 				clearInterval(getPosts);
-				dispatcher.dispatch({type: "LOAD_POSTS",  data: data.posts.data});
+				dispatcher.dispatch({ type: "LOAD_POSTS",  data: data.posts.data });
 			}
 		}, 500);
 	})
@@ -76,23 +76,12 @@ export function logout() {
 	});
 };
 
-export function getData(url, fields) {
-	dispatcher.dispatch({ type: Constants.FETCH_DATA });
+export function showPostInfo(url, fields) {
+	const requestResult = API.getPostInfo(url, fields);
 
-	FB.api(`/${url}`, 'GET', 
-		{ "fields": `${fields}` }, 
-		(response) => {
-	});
+	requestResult
+	.then((data) => {
+		dispatcher.dispatch({ type: "OPEN_POST",  postData: data.comments });
+	})
+	.catch(error => console.log(error));
 };
-
-
-// export function showPostInfo(postId) {
-// 	dispatcher.dispatch({ type: Constants.FETCH_DATA });
-
-// 	FB.api(`/${url}`, 'GET', 
-// 		{ "fields": `${fields}` }, 
-// 		(response) => {
-// 	});
-
-// 	dispatcher.dispatch({ type: Constants.FETCH_DATA });
-// }

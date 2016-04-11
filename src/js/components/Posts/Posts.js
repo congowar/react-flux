@@ -38,6 +38,8 @@ export default class Posts extends React.Component {
 					picture={current.full_picture}
 					link={current.link}
 					name={current.name}
+					postId={current.parent_id}
+					postNum={index}
 				/>
 			);
 		})
