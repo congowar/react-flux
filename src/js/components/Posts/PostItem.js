@@ -1,39 +1,39 @@
 import React from "react";
-
 import * as actions from "../../actions/actions";
-import AppStore from "../../stores/store";
+import AppStore from "../../stores/AppStore";
 import Comments from "./Comments";
 
 export default class PostItem extends React.Component {
-	constructor() {
-		super();
-		this.getPostData = this.getPostData.bind(this);
-		this.state = {
-			postData: AppStore.getPostData(),
-		};
-	}
+	// constructor() {
+	// 	super();
+	// 	this.getComments = this.getComments.bind(this);
+	// 	this.state = {
+	// 		comments: AppStore.getComments(),
+	// 	};
+	// }
 
-	componentWillMount() {
-		AppStore.on("change", this.getPostData);
-	}
+	// componentWillMount() {
+	// 	AppStore.on("change", this.getComments);
+	// }
 
-	componentWillUnmount() {
-		AppStore.removeListener("change", this.getPostData);
-	}
+	// componentWillUnmount() {
+	// 	AppStore.removeListener("change", this.getComments);
+	// }
 
-	getPostData() {
-		this.setState({
-			postData: AppStore.getPostData(),
-		});
-	}
+	// getComments() {
+	// 	this.setState({
+	// 		comments: AppStore.getComments(),
+	// 	});
+	// }
 
 	showPostInfo(postId, postNum) {
-		const fields = "comments.summary(true).limit(5)";
+		const fields = "comments.summary(true).limit(2)";
 		actions.showPostInfo(postId, fields);
 
 		const commentsContainer = $("[data-postid=" + postNum + "]").find(".comments");
 		$('.comments').hide();
-		commentsContainer.show();
+
+		setTimeout(() => { commentsContainer.show() }, 300);
 	}
 
 	render() {
@@ -68,7 +68,7 @@ export default class PostItem extends React.Component {
 					</button>
 				</p>
 
-				<Comments />
+				<Comments comments={this.props.comments} />
 			</div>
 		)
 	}

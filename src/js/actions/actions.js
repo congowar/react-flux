@@ -8,10 +8,7 @@ import Constants from "../constants/constants";
 
 export function login() {
 	const userData = {
-		userID: '',
-		accessToken: '',
 		name: '',
-		id: '',
 		picture: '',
 		email: '',
 		posts: [],
@@ -25,25 +22,27 @@ export function login() {
 
 				FB.login((callback) => {
 					if (callback) {
-						const {userID, accessToken} = callback.authResponse;
-						userData.userID = userID;
-						userData.accessToken = accessToken;
+						const {userID } = callback.authResponse;
+
+						dispatcher.dispatch({ type: "FETCH_POSTS",  loading: true });
 
 						FB.api(`/${userID}`, 'GET', 
-							{ "fields": "name, email, id, picture," +
-													"posts.limit(10){description, id, parent_id, picture, link, name, created_time, full_picture}",
+							{ 
+								"fields": "name, email, id, picture," +
+													"posts.limit(10){description, parent_id, link, name, created_time, full_picture}"
 							}, 
 							(response) => {
 								if (response) {
 									userData.posts = response.posts;
-									userData.id = response.id;
 									userData.name = response.name;
 									userData.email = response.email;
 									userData.picture = response.picture.data.url;
 								} else {
 									throw new Error('Error');
+									dispatcher.dispatch({ type: "LOAD_POSTS_ERROR",  error: "Load post error" });
 								};
-						});		
+							}
+						);		
 
 						resolve(userData);
 					} else { 
@@ -59,29 +58,39 @@ export function login() {
 	});
 
 	return promise
-	.then(data => {		
-		const getPosts = setInterval(() => {
-			if (data.posts.data.length > 0) {
-				clearInterval(getPosts);
-				dispatcher.dispatch({ type: "LOAD_POSTS",  data: data.posts.data });
-			}
+	.then(data => {			
+		const checkResponse = setInterval(() => {
+			if (data.hasOwnProperty('posts')) {
+				clearInterval(checkResponse);
+
+				dispatcher.dispatch({ 
+					type: "LOAD_POSTS_SUCCESS", 
+					data: { 
+						email: data.email, 
+						name: data.name,
+						picture: data.picture,
+						posts: data.posts.data,
+						paging: data.posts.paging
+					}, 
+				});
+			};
 		}, 500);
 	})
 	.catch(error => console.log(error));
 };
 
-export function logout() {
-	FB.logout((response) => {
-		console.log("You are not logged in", response);
-	});
-};
-
-export function showPostInfo(url, fields) {
-	const requestResult = API.getPostInfo(url, fields);
-
+export function showPostInfo(postId, fields) {
+	const requestResult = API.getPostInfo(postId, fields)
 	requestResult
 	.then((data) => {
-		dispatcher.dispatch({ type: "OPEN_POST",  postData: data.comments });
+		dispatcher.dispatch({ 
+			type: "LOAD_COMMENTS_SUCCESS",  
+			comments: data,
+		});
 	})
 	.catch(error => console.log(error));
 };
+
+export function logout() {
+	return API.logout();
+}

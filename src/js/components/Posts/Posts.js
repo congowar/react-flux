@@ -1,12 +1,12 @@
 import React from "react";
-
-import AppStore from "../../stores/store";
+import AppStore from "../../stores/AppStore";
 import PostItem from "./PostItem";
 
 export default class Posts extends React.Component {
 	constructor() {
 		super();
 		this.getPosts = this.getPosts.bind(this);
+		this.getComments = this.getComments.bind(this);
 		this.state = {
 			posts: AppStore.getPosts(),
 		};
@@ -26,13 +26,18 @@ export default class Posts extends React.Component {
 		});
 	}
 
+	getComments() {
+		this.setState({
+			comments: AppStore.getComments(),
+		})
+	}
+
 	render() {
 		const { posts } = this.state;
 		const PostsComponents = posts.map((current, index) => {
 			return (
 				<PostItem 
 					key={index}
-					id={current.id}
 					text={current.description}
 					time={current.created_time}
 					picture={current.full_picture}
@@ -40,6 +45,7 @@ export default class Posts extends React.Component {
 					name={current.name}
 					postId={current.parent_id}
 					postNum={index}
+					comments={current.comments}
 				/>
 			);
 		})
@@ -48,6 +54,11 @@ export default class Posts extends React.Component {
 			<div>
 				<h1 class="text-center">User Posts</h1>
 					{PostsComponents}
+
+			<div class="load-posts-wrapper">
+				<button class="btn">Load Next Posts</button>
+			</div>
+
 			</div>
 		)
 	}

@@ -1,16 +1,16 @@
 export default {
-	// fetch data actions
-	FETCH_DATA: "FETCH_DATA",
-	LOAD_POSTS: "LOAD_POSTS",
+	// fetch post data actions
+	FETCH_POSTS: "FETCH_POSTS",
 	LOAD_POSTS_SUCCESS: "LOAD_POSTS_SUCCESS",
 	LOAD_POSTS_ERROR: "LOAD_POSTS_ERROR",
 
+	// fetch comments data
+	FETCH_COMMENTS: "FETCH_COMMENTS",
+	LOAD_COMMENTS_SUCCESS: "LOAD_COMMENTS_SUCCESS",
+	LOAD_COMMENTS_ERROR: "LOAD_COMMENTS_ERROR",
+
 	// login actions
 	LOGIN: "LOGIN",
-
-	// posts actions
-	ADD_NEW_POST: "ADD_NEW_POST",
-	DELETE_POST: "DELETE_POST",
 
 	// facebook app data
 	APP_ID: "552216338261451",

@@ -58,7 +58,47 @@ footer .app-info {
 
 .comments {
 	width: 100%;
-	padding: 100px;
-	background-color: gray;
+	padding: 10px;
+	min-height: 30px; 
+	background-color: #F2F2F2;
+	border: 1px solid #E4E7E8;
+	border-radius: 2px;
 	display: none;
+}
+
+.comment-item {
+	padding: 15px;
+	background-color: white;
+}
+
+.comment-item:first-child {
+	border: 1px solid #E4E7E8;
+}
+
+.comment-item:not(:first-child) {
+	border-right: 1px solid #E4E7E8;
+	border-left: 1px solid #E4E7E8;
+	border-bottom: 1px solid #E4E7E8;
+}
+
+.author {
+	color: #4976AC;
+	font-size: 13px;
+  margin: 0 0 5px 0;
+}
+
+.message {
+  font-size: 12px;
+  color: #606060;
+  margin: 0 0 0 10px;
+}
+
+.load-posts-wrapper {
+	text-align: center;
+	width: 100%;
+	margin: 20px 0;
+}
+
+.load-posts-wrapper button {
+
 }
