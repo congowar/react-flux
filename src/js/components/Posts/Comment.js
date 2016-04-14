@@ -2,8 +2,6 @@ import React from "react";
 
 export default class Comment extends React.Component {
 	render() {
-		console.log(this.props);
-
 		return(
 			<div class="comment-item">
 				<p class="author">

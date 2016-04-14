@@ -1,23 +1,27 @@
 import React from "react";
 import AppStore from "../../stores/AppStore";
 import PostItem from "./PostItem";
+import * as actions from "../../actions/actions";
 
 export default class Posts extends React.Component {
 	constructor() {
 		super();
 		this.getPosts = this.getPosts.bind(this);
-		this.getComments = this.getComments.bind(this);
+		this.getPaging = this.getPaging.bind(this);
 		this.state = {
 			posts: AppStore.getPosts(),
+			paging: AppStore.getPaging(),
 		};
 	}
 
 	componentWillMount() {
 		AppStore.on("change", this.getPosts);
+		AppStore.on("change", this.getPaging);
 	}
 
 	componentWillUnmount() {
 		AppStore.removeListener("change", this.getPosts);
+		AppStore.removeListener("change", this.getPaging);
 	}
 
 	getPosts() {
@@ -26,10 +30,14 @@ export default class Posts extends React.Component {
 		});
 	}
 
-	getComments() {
+	getPaging() {
 		this.setState({
-			comments: AppStore.getComments(),
+			paging: AppStore.getPaging(),
 		})
+	}
+
+	loadNewPosts() {
+		actions.getNewPosts(this.state.paging.next);
 	}
 
 	render() {
@@ -55,10 +63,11 @@ export default class Posts extends React.Component {
 				<h1 class="text-center">User Posts</h1>
 					{PostsComponents}
 
-			<div class="load-posts-wrapper">
-				<button class="btn">Load Next Posts</button>
-			</div>
-
+				<div class="load-posts-wrapper">
+					<button 
+						class="btn"
+						onClick={this.loadNewPosts.bind(this)}>Load Next Posts</button>
+				</div>
 			</div>
 		)
 	}

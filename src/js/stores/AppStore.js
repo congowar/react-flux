@@ -20,20 +20,30 @@ class AppStore extends EventEmitter {
 		return this.posts;
 	}
 
-	addEmptyComments() {
-		const newPosts = this.posts.map((current, indext) => {
-			for (var key in current) {
-				(key !== 'comments') ? current.comments = {} : false;
-			};
+	getPaging() {
+		return this.paging;
+	}
+	
+	getUserData() {
+		return this.userData;
+	}
+
+	addPosts(posts) {
+		posts.forEach((current, i) => {
+			current.comments = {};
+			this.posts.push(current);
 		})
 	}
 
-	pushComments(data) {
+	addComments(data) {
 		const { id, comments } = data;
 		this.posts.map((current, index) => {
 
 			if (id === current.parent_id) {
-				current.comments = comments;
+				if (current.comments.hasOwnProperty('data') && current.comments.length > 0) {
+				} else {
+					current.comments = comments;
+				};
 			}
 		});
 	}
@@ -46,15 +56,13 @@ class AppStore extends EventEmitter {
 				break;
 
 			case "LOAD_POSTS_SUCCESS":
+				this.addPosts(action.data.posts);
+
 				this.userData.name = action.data.name;
 				this.userData.email = action.data.email;
 				this.userData.picture = action.data.picture;
 				this.paging = action.data.paging;
-				this.posts = action.data.posts;
 				this.loading = false;
-
-				this.addEmptyComments();
-
 				this.emit("change");
 				break;
 
@@ -70,8 +78,8 @@ class AppStore extends EventEmitter {
 				break;
 
 			case "LOAD_COMMENTS_SUCCESS":
-				// this.comments.push(action.comments);
-				this.pushComments(action.comments);
+				this.addComments(action.comments);
+
 				this.loading = false;
 				this.emit("change");
 				break;

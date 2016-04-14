@@ -4,30 +4,8 @@ import AppStore from "../../stores/AppStore";
 import Comments from "./Comments";
 
 export default class PostItem extends React.Component {
-	// constructor() {
-	// 	super();
-	// 	this.getComments = this.getComments.bind(this);
-	// 	this.state = {
-	// 		comments: AppStore.getComments(),
-	// 	};
-	// }
-
-	// componentWillMount() {
-	// 	AppStore.on("change", this.getComments);
-	// }
-
-	// componentWillUnmount() {
-	// 	AppStore.removeListener("change", this.getComments);
-	// }
-
-	// getComments() {
-	// 	this.setState({
-	// 		comments: AppStore.getComments(),
-	// 	});
-	// }
-
 	showPostInfo(postId, postNum) {
-		const fields = "comments.summary(true).limit(2)";
+		const fields = "comments.summary(true).limit(5)";
 		actions.showPostInfo(postId, fields);
 
 		const commentsContainer = $("[data-postid=" + postNum + "]").find(".comments");
@@ -61,9 +39,9 @@ export default class PostItem extends React.Component {
 				<div class="post-img" style={styles}></div>
 				<p class="description">{this.props.text}</p>
 				<p class="text-right">
-					<button 
+					<button
+						class="btn btn-succes open-post" 
 						onClick={this.showPostInfo.bind(null, this.props.postId, this.props.postNum)} 
-						class="btn btn-succes open-post"
 						>Open
 					</button>
 				</p>

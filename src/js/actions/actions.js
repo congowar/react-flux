@@ -91,6 +91,19 @@ export function showPostInfo(postId, fields) {
 	.catch(error => console.log(error));
 };
 
+export function getNewPosts(url) {
+	const requestResult = API.getNewPosts(url);
+	requestResult
+	.then((data) => {
+		console.log(data);
+		dispatcher.dispatch({ 
+			type: "LOAD_POSTS_SUCCESS",  
+			data: { posts: data.data, paging: data.paging },
+		});
+	})
+	.catch(error => console.log(error));
+};
+
 export function logout() {
 	return API.logout();
-}
+};
